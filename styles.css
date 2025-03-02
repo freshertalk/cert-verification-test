@@ -1,105 +1,250 @@
-/* General Dark Mode Styles */
-body.dark-mode {
-    background: #121212;
-    /* Dark background */
-    color: #E0E0E0;
-    /* Light gray text */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-/* Header */
+body {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: background 0.5s ease;
+}
+
+body.dark-mode {
+    background: linear-gradient(135deg, #1C2526, #2D3839);
+    color: #F0F0F0;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+body.dark-mode .card {
+    background: rgba(42, 47, 50, 0.95);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    color: #1A73E8;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
 body.dark-mode .title {
-    color: #4DD0E1;
-    /* Softer teal for title */
+    color: #66B2FF;
+}
+
+h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 body.dark-mode h2 {
-    color: #B0BEC5;
-    /* Muted gray for subheading */
+    color: #E0E0E0;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
 }
 
 body.dark-mode label {
-    color: #B0BEC5;
-    /* Muted gray for labels */
-}
-
-/* Input Field */
-body.dark-mode input {
-    background: #2A2A2A;
-    /* Darker gray background */
     color: #E0E0E0;
-    /* Light text */
-    border: 1px solid #444;
-    /* Subtle border */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    /* Subtle shadow */
-    border-radius: 5px;
 }
 
-/* Buttons */
-body.dark-mode button {
-    background: #1E88E5;
-    /* Darker blue */
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #1A73E8;
+    outline: none;
+}
+
+body.dark-mode input {
+    background: #3A3F42;
     color: #F0F0F0;
-    /* Off-white text */
+    border-color: #555;
+}
+
+button {
+    background: #1A73E8;
+    color: white;
+    padding: 12px 20px;
     border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    /* Subtle shadow */
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: #1557B0;
+    transform: scale(1.05);
+}
+
+body.dark-mode button {
+    background: #66B2FF;
 }
 
 body.dark-mode button:hover {
-    background: #1565C0;
-    /* Darker blue on hover */
+    background: #4A90E2;
 }
 
-/* Result Card */
-body.dark-mode .result.success {
-    background: #2E7D32;
-    /* Muted dark green for success */
-    border: 1px solid #4CAF50;
-    /* Softer green border */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
+.result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    animation: slideIn 0.5s ease;
 }
 
-body.dark-mode .result.error {
-    background: #C62828;
-    /* Muted dark red for error */
-    border: 1px solid #D32F2F;
-    /* Softer red border */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
+.result.success {
+    background: #E6FFE6;
+    border: 1px solid #00CC00;
+    color: #333;
 }
 
-body.dark-mode .result h3,
-body.dark-mode .result p {
-    color: #F0F0F0;
-    /* Off-white text */
+.result.error {
+    background: #FFE6E6;
+    border: 1px solid #CC0000;
+    color: #333;
 }
 
-body.dark-mode .icon {
-    color: #4CAF50;
-    /* Softer green for success icon */
+.hidden {
+    display: none;
 }
 
-body.dark-mode .error .icon {
-    color: #D32F2F;
-    /* Softer red for error icon */
+.theme-toggle {
+    margin-top: 1rem;
+    background: #E0E0E0;
+    color: #333;
 }
 
-/* Toggle Dark Mode Button */
 body.dark-mode .theme-toggle {
-    background: #333;
-    /* Slightly lighter gray */
+    background: #555;
     color: #F0F0F0;
-    /* Off-white text */
-    border: 1px solid #444;
-    /* Subtle border */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
 }
 
-body.dark-mode .theme-toggle:hover {
-    background: #444;
-    /* Lighter gray on hover */
+.footer {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+body.dark-mode .footer {
+    background: rgba(42, 47, 50, 0.9);
+}
+
+.footer h3 {
+    color: #1A73E8;
+    margin-bottom: 0.5rem;
+}
+
+body.dark-mode .footer h3 {
+    color: #66B2FF;
+}
+
+.footer p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+}
+
+body.dark-mode .footer p {
+    color: #C0C0C0;
+}
+
+.social-links a {
+    color: #1A73E8;
+    margin: 0 0.5rem;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #1557B0;
+}
+
+body.dark-mode .social-links a {
+    color: #66B2FF;
+}
+
+body.dark-mode .social-links a:hover {
+    color: #4A90E2;
+}
+
+.copyright {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
 }
