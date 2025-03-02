@@ -1,81 +1,105 @@
 /* General Dark Mode Styles */
 body.dark-mode {
-    background: #121212; /* Dark background */
-    color: #E0E0E0; /* Light gray text */
+    background: #121212;
+    /* Dark background */
+    color: #E0E0E0;
+    /* Light gray text */
 }
 
 /* Header */
 body.dark-mode .title {
-    color: #4DD0E1; /* Softer teal for title */
+    color: #4DD0E1;
+    /* Softer teal for title */
 }
 
 body.dark-mode h2 {
-    color: #B0BEC5; /* Muted gray for subheading */
+    color: #B0BEC5;
+    /* Muted gray for subheading */
 }
 
 body.dark-mode label {
-    color: #B0BEC5; /* Muted gray for labels */
+    color: #B0BEC5;
+    /* Muted gray for labels */
 }
 
 /* Input Field */
 body.dark-mode input {
-    background: #2A2A2A; /* Darker gray background */
-    color: #E0E0E0; /* Light text */
-    border: 1px solid #444; /* Subtle border */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    background: #2A2A2A;
+    /* Darker gray background */
+    color: #E0E0E0;
+    /* Light text */
+    border: 1px solid #444;
+    /* Subtle border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    /* Subtle shadow */
     border-radius: 5px;
 }
 
 /* Buttons */
 body.dark-mode button {
-    background: #1E88E5; /* Darker blue */
-    color: #F0F0F0; /* Off-white text */
+    background: #1E88E5;
+    /* Darker blue */
+    color: #F0F0F0;
+    /* Off-white text */
     border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    /* Subtle shadow */
     border-radius: 5px;
 }
 
 body.dark-mode button:hover {
-    background: #1565C0; /* Darker blue on hover */
+    background: #1565C0;
+    /* Darker blue on hover */
 }
 
 /* Result Card */
 body.dark-mode .result.success {
-    background: #2E7D32; /* Muted dark green for success */
-    border: 1px solid #4CAF50; /* Softer green border */
+    background: #2E7D32;
+    /* Muted dark green for success */
+    border: 1px solid #4CAF50;
+    /* Softer green border */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
 }
 
 body.dark-mode .result.error {
-    background: #C62828; /* Muted dark red for error */
-    border: 1px solid #D32F2F; /* Softer red border */
+    background: #C62828;
+    /* Muted dark red for error */
+    border: 1px solid #D32F2F;
+    /* Softer red border */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
 }
 
 body.dark-mode .result h3,
 body.dark-mode .result p {
-    color: #F0F0F0; /* Off-white text */
+    color: #F0F0F0;
+    /* Off-white text */
 }
 
 body.dark-mode .icon {
-    color: #4CAF50; /* Softer green for success icon */
+    color: #4CAF50;
+    /* Softer green for success icon */
 }
 
 body.dark-mode .error .icon {
-    color: #D32F2F; /* Softer red for error icon */
+    color: #D32F2F;
+    /* Softer red for error icon */
 }
 
 /* Toggle Dark Mode Button */
 body.dark-mode .theme-toggle {
-    background: #333; /* Slightly lighter gray */
-    color: #F0F0F0; /* Off-white text */
-    border: 1px solid #444; /* Subtle border */
+    background: #333;
+    /* Slightly lighter gray */
+    color: #F0F0F0;
+    /* Off-white text */
+    border: 1px solid #444;
+    /* Subtle border */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
 }
 
 body.dark-mode .theme-toggle:hover {
-    background: #444; /* Lighter gray on hover */
+    background: #444;
+    /* Lighter gray on hover */
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <main class="container">
         <section class="card" aria-labelledby="title">
@@ -16,10 +18,9 @@
                 <h2>Certificate Verification System</h2>
             </header>
             <form id="verify-form" class="input-group">
-                <label for="certificate_id">Enter Certificate ID</label>
-                <input type="text" id="certificate_id" name="certificate_id" 
-                       placeholder="e.g., FT-WS-252006" 
-                       aria-describedby="certificate-error" required pattern="FT-WS-\d{6}">
+                <label for="certificate_id">Please Enter Certificate ID:</label>
+                <input type="text" id="certificate_id" name="certificate_id" placeholder="e.g., FT-WS-252006"
+                    aria-describedby="certificate-error" required pattern="FT-WS-\d{6}">
                 <button type="submit" aria-label="Verify Certificate">
                     <span id="button-text">Verify Certificate</span>
                     <i id="loading-spinner" class="fas fa-spinner fa-spin hidden"></i>
@@ -54,4 +55,5 @@
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
