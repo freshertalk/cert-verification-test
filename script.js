@@ -1,73 +1,93 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("verify-form");
+  const certificateInput = document.getElementById("certificate_id");
+  const errorMessage = document.getElementById("error-message");
   const resultDiv = document.getElementById("result");
-  const toggleThemeButton = document.getElementById("toggle-theme");
 
-  // Dark mode toggle
-  toggleThemeButton.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-  });
-
-  // Form submission
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const certificateId = document
-      .getElementById("certificate_id")
-      .value.trim();
+    const certificateId = certificateInput.value.trim();
 
+    // Clear previous messages
+    errorMessage.classList.add("hidden");
+    resultDiv.classList.add("hidden");
+    resultDiv.innerHTML = "";
+
+    // Input validation
     if (!certificateId) {
-      showResult("error", "Please enter a Certificate ID.");
+      errorMessage.textContent = "Please enter a Certificate ID.";
+      errorMessage.classList.remove("hidden");
+      return;
+    }
+
+    const idPattern = /^FT-WS-\d{6}$/;
+    if (!idPattern.test(certificateId)) {
+      errorMessage.textContent =
+        "Invalid Certificate ID format. Use FT-WS-XXXXXX (six digits).";
+      errorMessage.classList.remove("hidden");
       return;
     }
 
     try {
+      // Fetch certificates.csv
       const response = await fetch("certificates.csv");
-      if (!response.ok) throw new Error("Failed to load certificate data.");
+      if (!response.ok) {
+        throw new Error(
+          `Failed to load certificate data. Status: ${response.status}`
+        );
+      }
       const text = await response.text();
-      const certificates = parseCSV(text);
+
+      // Parse CSV data
+      const certificates = await parseCSV(text);
+      if (!certificates || certificates.length === 0) {
+        throw new Error("No certificates found in the data.");
+      }
+
+      // Find matching certificate
       const certificate = certificates.find(
         (cert) => cert.certificate_id === certificateId
       );
-
       if (certificate) {
-        showResult(
-          "success",
-          `
+        resultDiv.className = "result success";
+        resultDiv.innerHTML = `
                     <strong>Certificate Found</strong><br>
                     Certificate ID: ${certificate.certificate_id}<br>
                     Name: ${certificate.name}<br>
                     Course: ${certificate.course}<br>
                     Date Issued: ${certificate.date_issued}
-                `
-        );
+                `;
+        resultDiv.classList.remove("hidden");
       } else {
-        showResult("error", "Certificate Not Found");
+        errorMessage.textContent =
+          "Certificate Not Found. Please check the ID and try again.";
+        errorMessage.classList.remove("hidden");
       }
     } catch (error) {
-      showResult(
-        "error",
-        `Error: ${error.message || "Please try again later."}`
-      );
+      errorMessage.textContent = `Error: ${
+        error.message || "Unable to verify certificate."
+      }`;
+      errorMessage.classList.remove("hidden");
     }
   });
 
-  // Show result with styling
-  function showResult(type, message) {
-    resultDiv.className = `result ${type}`;
-    resultDiv.innerHTML = message;
-    resultDiv.classList.remove("hidden");
-  }
-
-  // Parse CSV data
+  // Parse CSV using PapaParse
   function parseCSV(csvText) {
-    const lines = csvText.trim().split("\n");
-    const headers = lines[0].split(",").map((header) => header.trim());
-    return lines.slice(1).map((line) => {
-      const values = line.split(",").map((value) => value.trim());
-      return headers.reduce((obj, header, index) => {
-        obj[header] = values[index];
-        return obj;
-      }, {});
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (result) => {
+          if (result.errors.length > 0) {
+            reject(
+              new Error("CSV parsing failed: " + result.errors[0].message)
+            );
+          } else {
+            resolve(result.data);
+          }
+        },
+        error: (err) => reject(err),
+      });
     });
   }
 });
