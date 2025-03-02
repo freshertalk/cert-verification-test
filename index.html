@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FresherTALK Certificate Verification</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="container">
+        <section class="card" aria-labelledby="title">
+            <header>
+                <h1 id="title" class="title">FresherTALK Digital Solutions</h1>
+                <h2>Certificate Verification System</h2>
+            </header>
+            <form id="verify-form" class="input-group">
+                <label for="certificate_id">Enter Certificate ID</label>
+                <input type="text" id="certificate_id" name="certificate_id" 
+                       placeholder="e.g., FT-WS-252006" 
+                       aria-describedby="certificate-error" required>
+                <button type="submit" aria-label="Verify Certificate">Verify Certificate</button>
+                <p id="certificate-error" class="error-message" role="alert"></p>
+            </form>
+            <div id="result" class="result" role="region" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>FresherTALK Digital Solutions</h3>
+            <p><strong>Address:</strong> Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
+            <p><strong>Registration No.:</strong> UPSA66715491 | <strong>MSME URN:</strong> UDYAM-UP-30-0037331</p>
+            <p><strong>GSTIN:</strong> 09BMEPT8758F1ZD</p>
+            <p><strong>Approved by:</strong> AICTE, New Delhi, for offering internships</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
