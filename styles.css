@@ -103,8 +103,8 @@ label {
     transition: 0.3s ease;
 }
 
-input:focus+label,
-input:not(:placeholder-shown)+label {
+input:focus + label,
+input:not(:placeholder-shown) + label {
     top: -10px;
     left: 10px;
     font-size: 0.8rem;
@@ -123,8 +123,8 @@ body.dark-mode label {
     color: #CCC;
 }
 
-body.dark-mode input:focus+label,
-body.dark-mode input:not(:placeholder-shown)+label {
+body.dark-mode input:focus + label,
+body.dark-mode input:not(:placeholder-shown) + label {
     color: #66B2FF;
     background: #3A3F42;
 }
@@ -257,48 +257,22 @@ body.dark-mode .theme-toggle:hover {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
     .card {
         padding: 1.5rem;
     }
-
     .company-name {
         font-size: 2rem;
     }
-
     h2 {
         font-size: 1.2rem;
     }
