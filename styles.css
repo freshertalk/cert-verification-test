@@ -5,6 +5,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* Body styles */
 body {
     background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
     min-height: 100vh;
@@ -18,6 +19,7 @@ body.dark-mode {
     background: linear-gradient(135deg, #1C2526, #2D3839);
 }
 
+/* Header styles */
 header {
     text-align: center;
     margin-bottom: 2rem;
@@ -38,6 +40,7 @@ body.dark-mode .company-name {
     color: #66B2FF;
 }
 
+/* Main content container */
 .container {
     flex: 1;
     display: flex;
@@ -69,6 +72,7 @@ body.dark-mode h2 {
     color: #E0E0E0;
 }
 
+/* Form styles */
 .input-group {
     margin-bottom: 1.5rem;
     position: relative;
@@ -153,6 +157,7 @@ body.dark-mode .verify-button {
     background: linear-gradient(135deg, #66B2FF, #14B8A6);
 }
 
+/* Error and result styles */
 .error-message {
     color: #D32F2F;
     font-size: 0.9rem;
@@ -169,11 +174,41 @@ body.dark-mode .verify-button {
     color: #333;
 }
 
+.result .icon {
+    color: #00CC00;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
 body.dark-mode .result {
     background: #2E7D32;
     color: #F0F0F0;
 }
 
+.copy-button {
+    background: #1A73E8;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+}
+
+.copy-button:hover {
+    background: #1557B0;
+}
+
+body.dark-mode .copy-button {
+    background: #66B2FF;
+}
+
+body.dark-mode .copy-button:hover {
+    background: #4A90E2;
+}
+
+/* Dark mode toggle button */
 .theme-toggle {
     margin-top: 1.5rem;
     padding: 10px 20px;
@@ -198,6 +233,7 @@ body.dark-mode .theme-toggle:hover {
     background: #777;
 }
 
+/* Footer styles */
 .footer {
     background: linear-gradient(135deg, #1A73E8, #14B8A6);
     padding: 2rem;
@@ -225,13 +261,13 @@ body.dark-mode .theme-toggle:hover {
 }
 
 .footer a {
-    color: #F472B6;
+    color: white;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .footer a:hover {
-    color: #FBBF24;
+    color: #F472B6;
 }
 
 .social-links {
@@ -256,16 +292,13 @@ body.dark-mode .theme-toggle:hover {
     color: white;
 }
 
+/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-@keyframes slideInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+/* Responsive design */
 @media (max-width: 768px) {
     .card {
         padding: 1.5rem;
@@ -276,4 +309,8 @@ body.dark-mode .theme-toggle:hover {
     h2 {
         font-size: 1.2rem;
     }
+}
+
+.hidden {
+    display: none;
 }
