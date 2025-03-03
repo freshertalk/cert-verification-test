@@ -3,91 +3,62 @@ document.addEventListener("DOMContentLoaded", () => {
   const certificateInput = document.getElementById("certificate_id");
   const errorMessage = document.getElementById("error-message");
   const resultDiv = document.getElementById("result");
+  const toggleThemeButton = document.getElementById("toggle-theme");
 
+  // Dark mode toggle
+  toggleThemeButton.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem(
+      "theme",
+      document.body.classList.contains("dark-mode") ? "dark" : "light"
+    );
+  });
+
+  // Restore theme from local storage
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+
+  // Form submission
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const certificateId = certificateInput.value.trim();
-
-    // Clear previous messages
-    errorMessage.classList.add("hidden");
-    resultDiv.classList.add("hidden");
-    resultDiv.innerHTML = "";
-
-    // Input validation
     if (!certificateId) {
-      errorMessage.textContent = "Please enter a Certificate ID.";
+      errorMessage.textContent = "Please enter a Certificate ID";
       errorMessage.classList.remove("hidden");
+      resultDiv.classList.add("hidden");
       return;
     }
-
-    const idPattern = /^FT-WS-\d{6}$/;
-    if (!idPattern.test(certificateId)) {
-      errorMessage.textContent =
-        "Invalid Certificate ID format. Use FT-WS-XXXXXX (six digits).";
-      errorMessage.classList.remove("hidden");
-      return;
-    }
-
     try {
-      // Fetch certificates.csv
       const response = await fetch("certificates.csv");
-      if (!response.ok) {
-        throw new Error(
-          `Failed to load certificate data. Status: ${response.status}`
-        );
-      }
+      if (!response.ok) throw new Error("Failed to load certificates");
       const text = await response.text();
-
-      // Parse CSV data
-      const certificates = await parseCSV(text);
-      if (!certificates || certificates.length === 0) {
-        throw new Error("No certificates found in the data.");
-      }
-
-      // Find matching certificate
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+      if (parsed.errors.length > 0) throw new Error("Error parsing CSV");
+      const certificates = parsed.data;
       const certificate = certificates.find(
         (cert) => cert.certificate_id === certificateId
       );
       if (certificate) {
-        resultDiv.className = "result success";
         resultDiv.innerHTML = `
-                    <strong>Certificate Found</strong><br>
-                    Certificate ID: ${certificate.certificate_id}<br>
-                    Name: ${certificate.name}<br>
-                    Course: ${certificate.course}<br>
-                    Date Issued: ${certificate.date_issued}
+                    <i class="fas fa-check-circle icon"></i>
+                    <h3>Certificate Found</h3>
+                    <p><strong>Certificate ID:</strong> ${certificate.certificate_id}</p>
+                    <p><strong>Name:</strong> ${certificate.name}</p>
+                    <p><strong>Course:</strong> ${certificate.course}</p>
+                    <p><strong>Date Issued:</strong> ${certificate.date_issued}</p>
                 `;
         resultDiv.classList.remove("hidden");
+        errorMessage.classList.add("hidden");
       } else {
-        errorMessage.textContent =
-          "Certificate Not Found. Please check the ID and try again.";
+        errorMessage.textContent = "Certificate not found";
         errorMessage.classList.remove("hidden");
+        resultDiv.classList.add("hidden");
       }
     } catch (error) {
-      errorMessage.textContent = `Error: ${
-        error.message || "Unable to verify certificate."
-      }`;
+      errorMessage.textContent = error.message;
       errorMessage.classList.remove("hidden");
+      resultDiv.classList.add("hidden");
     }
   });
-
-  // Parse CSV using PapaParse
-  function parseCSV(csvText) {
-    return new Promise((resolve, reject) => {
-      Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (result) => {
-          if (result.errors.length > 0) {
-            reject(
-              new Error("CSV parsing failed: " + result.errors[0].message)
-            );
-          } else {
-            resolve(result.data);
-          }
-        },
-        error: (err) => reject(err),
-      });
-    });
-  }
 });
