@@ -107,8 +107,8 @@ label {
     transition: 0.3s ease;
 }
 
-input:focus + label,
-input:not(:placeholder-shown) + label {
+input:focus+label,
+input:not(:placeholder-shown)+label {
     top: -10px;
     left: 10px;
     font-size: 0.8rem;
@@ -127,8 +127,8 @@ body.dark-mode label {
     color: #CCC;
 }
 
-body.dark-mode input:focus + label,
-body.dark-mode input:not(:placeholder-shown) + label {
+body.dark-mode input:focus+label,
+body.dark-mode input:not(:placeholder-shown)+label {
     color: #66B2FF;
     background: #3A3F42;
 }
@@ -136,7 +136,7 @@ body.dark-mode input:not(:placeholder-shown) + label {
 .verify-button {
     background: linear-gradient(135deg, #1A73E8, #14B8A6);
     color: white;
-    padding: 12px 20px;
+    padding: 5px 10px;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
@@ -294,8 +294,13 @@ body.dark-mode .theme-toggle:hover {
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Responsive design */
@@ -303,9 +308,11 @@ body.dark-mode .theme-toggle:hover {
     .card {
         padding: 1.5rem;
     }
+
     .company-name {
         font-size: 2rem;
     }
+
     h2 {
         font-size: 1.2rem;
     }
