@@ -15,7 +15,6 @@ const closeCameraBtn = document.getElementById("close-camera");
 let codeReader;
 let isScanning = false;
 
-// Function to refresh the application state
 function refreshApplication() {
   certificateIdInput.value = "";
   verificationResult.innerHTML = "";
@@ -33,7 +32,6 @@ function verifyCertificate() {
     .then((response) => response.text())
     .then((data) => {
       const rows = data.split("\n").map((row) => row.split(","));
-      const headers = rows[0];
       const records = rows.slice(1);
 
       const record = records.find((row) => row[0] === id);
@@ -46,15 +44,15 @@ function verifyCertificate() {
                 `;
         verifyAnotherBtn.style.display = "block";
       } else {
-        verificationResult.innerHTML = "<p>Certificate not found.</p>";
+        verificationResult.innerHTML =
+          '<p style="color: red; font-weight: bold;">Certificate not found.</p>';
       }
-      // Automatically refresh after 2 seconds
       setTimeout(refreshApplication, 2000);
     })
     .catch((error) => {
       console.error("Error reading CSV:", error);
-      verificationResult.innerHTML = "<p>Error verifying certificate.</p>";
-      // Refresh even on error
+      verificationResult.innerHTML =
+        '<p style="color: red;">Error verifying certificate.</p>';
       setTimeout(refreshApplication, 2000);
     });
 }
@@ -64,6 +62,7 @@ verifyBtn.addEventListener("click", verifyCertificate);
 scanQrBtn.addEventListener("click", () => {
   if (isScanning) return;
   isScanning = true;
+  verificationResult.innerHTML = "";
 
   codeReader = new ZXing.BrowserQRCodeReader();
   videoContainer.style.display = "block";
@@ -77,10 +76,10 @@ scanQrBtn.addEventListener("click", () => {
       }
 
       if (!certificateId || !certificateId.match(/^FT-WS-\d+$/)) {
-        verificationResult.innerHTML = "<p>Please scan a valid QR.</p>";
+        verificationResult.innerHTML =
+          '<p style="color: red;">Please scan a valid QR code.</p>';
         stopScanning();
         isScanning = false;
-        // Refresh after invalid QR
         setTimeout(refreshApplication, 2000);
         return;
       }
@@ -88,14 +87,14 @@ scanQrBtn.addEventListener("click", () => {
       certificateIdInput.value = certificateId;
       stopScanning();
       isScanning = false;
-      verifyCertificate(); // This will handle the refresh
+      verifyCertificate();
     }
     if (err && !(err instanceof ZXing.NotFoundException)) {
       console.error("QR Scan Error:", err);
-      verificationResult.innerHTML = "<p>Error scanning QR code.</p>";
+      verificationResult.innerHTML =
+        '<p style="color: red;">Error scanning QR code.</p>';
       stopScanning();
       isScanning = false;
-      // Refresh after scanning error
       setTimeout(refreshApplication, 2000);
     }
   });
@@ -119,20 +118,3 @@ closeCameraBtn.addEventListener("click", () => {
 });
 
 verifyAnotherBtn.addEventListener("click", refreshApplication);
-
-// Floating Animations
-function createParticles() {
-  const particleContainer = document.querySelector(".background-animations");
-  const particleCount = 20;
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement("div");
-    particle.classList.add("particle");
-    particle.style.width = `${Math.random() * 10 + 5}px`;
-    particle.style.height = particle.style.width;
-    particle.style.left = `${Math.random() * 100}vw`;
-    particle.style.top = `${Math.random() * 100}vh`;
-    particle.style.animationDelay = `${Math.random() * 10}s`;
-    particleContainer.appendChild(particle);
-  }
-}
-createParticles();
