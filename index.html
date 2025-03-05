@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <!-- Include ZXing library for QR code scanning -->
     <script src="https://unpkg.com/@zxing/library@latest"></script>
 </head>
-
 <body>
     <header>
         <div class="logo">
@@ -47,11 +45,11 @@
             </div>
         </div>
     </footer>
-    <!-- Video container for QR scanning -->
+    <!-- Video container for QR scanning with close icon -->
     <div id="video-container" style="display: none;">
         <video id="video" width="300" height="300"></video>
+        <button id="close-camera">X</button>
     </div>
     <script src="script.js"></script>
 </body>
-
 </html>
