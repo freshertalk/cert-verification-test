@@ -91,9 +91,9 @@ scanQrBtn.addEventListener('click', () => {
                 }
             }
 
-            // Validate the extracted ID
-            if (!certificateId || !certificateId.match(/^FT-WS-\d+$/)) {
-                verificationResult.innerHTML = '<p style="color: red;">Please scan a valid QR code containing a certificate ID.</p>';
+            // Validate the extracted ID (only check for FT- prefix)
+            if (!certificateId || !certificateId.match(/^FT-/)) {
+                verificationResult.innerHTML = '<p style="color: red;">Please scan a valid QR code containing a certificate ID starting with FT-.</p>';
                 stopScanning();
                 isScanning = false;
                 setTimeout(refreshApplication, 5000);
