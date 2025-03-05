@@ -26,15 +26,15 @@ function refreshApplication() {
   certificateIdInput.value = "";
   verificationResult.innerHTML = "";
   verifyAnotherBtn.style.display = "none";
-  // Clear URL query parameters
   window.history.pushState({}, document.title, window.location.pathname);
 }
 
 // Verify Certificate
-function verifyCertificate() {
-  const id = certificateIdInput.value.trim();
+function verifyCertificate(id) {
   if (!id) {
-    alert("Please enter or scan a certificate ID.");
+    verificationResult.innerHTML =
+      '<p style="color: red;">Please enter or scan a certificate ID.</p>';
+    setTimeout(refreshApplication, 5000);
     return;
   }
 
@@ -42,7 +42,7 @@ function verifyCertificate() {
     .then((response) => response.text())
     .then((data) => {
       const rows = data.split("\n").map((row) => row.split(","));
-      const records = rows.slice(1);
+      const records = rows.slice(1); // Skip header row
 
       const record = records.find((row) => row[0] === id);
       if (record) {
@@ -55,7 +55,7 @@ function verifyCertificate() {
         verifyAnotherBtn.style.display = "block";
       } else {
         verificationResult.innerHTML =
-          '<p style="color: red; font-weight: bold;">Certificate not found.</p>';
+          '<p style="color: red; font-weight: bold;">The certificate ID you entered was not found in our records.</p>';
         setTimeout(refreshApplication, 5000);
       }
     })
@@ -79,11 +79,9 @@ scanQrBtn.addEventListener("click", () => {
   codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
     if (result) {
       let qrContent = result.text;
-
-      // Extract certificate ID from QR content
       let certificateId = qrContent;
 
-      // Check if the QR content is a URL and extract the ID if present
+      // Extract certificate ID if QR content is a URL
       if (qrContent.startsWith("http")) {
         try {
           const url = new URL(qrContent);
@@ -93,21 +91,20 @@ scanQrBtn.addEventListener("click", () => {
         }
       }
 
-      // Validate the extracted ID (only check for FT- prefix)
+      // Validate certificate ID format (must start with FT-)
       if (!certificateId || !certificateId.match(/^FT-/)) {
         verificationResult.innerHTML =
-          '<p style="color: red;">Please scan a valid QR code containing a certificate ID starting with FT-.</p>';
+          '<p style="color: red;">Invalid certificate ID format. Please scan a valid QR code.</p>';
         stopScanning();
         isScanning = false;
         setTimeout(refreshApplication, 5000);
         return;
       }
 
-      // Populate input field and verify automatically
       certificateIdInput.value = certificateId;
       stopScanning();
       isScanning = false;
-      verifyCertificate();
+      verifyCertificate(certificateId);
     }
     if (err && !(err instanceof ZXing.NotFoundException)) {
       console.error("QR Scan Error:", err);
@@ -126,19 +123,8 @@ function stopScanning() {
     const video = document.getElementById("video");
     const stream = video.srcObject;
     if (stream) {
-      // Stop all media tracks (camera)
       stream.getTracks().forEach((track) => track.stop());
     }
-    // Fallback: Directly stop camera using navigator if still active
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((mediaStream) => {
-          mediaStream.getTracks().forEach((track) => track.stop());
-        })
-        .catch((err) => console.log("No active camera to stop:", err));
-    }
-    video.srcObject = null; // Clear the video source
     videoContainer.style.display = "none";
   }
 }
@@ -151,13 +137,16 @@ closeCameraBtn.addEventListener("click", () => {
 verifyAnotherBtn.addEventListener("click", refreshApplication);
 
 // Verify Certificate Button Event
-verifyBtn.addEventListener("click", verifyCertificate);
+verifyBtn.addEventListener("click", () => {
+  const id = certificateIdInput.value.trim();
+  verifyCertificate(id);
+});
 
 // Automatic Verification on Page Load if URL Parameter Exists
 const certificateIdFromUrl = getQueryParam("id");
 if (certificateIdFromUrl) {
   certificateIdInput.value = certificateIdFromUrl;
-  verifyCertificate();
+  verifyCertificate(certificateIdFromUrl);
 }
 
 // Floating Animations
