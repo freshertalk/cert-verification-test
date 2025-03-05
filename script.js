@@ -1,54 +1,36 @@
-// DOM Elements (assumed to exist in index.html)
+// DOM Elements
+const toggleDarkModeBtn = document.getElementById("toggle-dark-mode");
+const verifyBtn = document.getElementById("verify-btn");
 const certificateIdInput = document.getElementById("certificate-id");
-const scanQrBtn = document.getElementById("scan-qr-btn");
 const verificationResult = document.getElementById("verification-result");
 const verifyAnotherBtn = document.getElementById("verify-another-btn");
+const scanQrBtn = document.getElementById("scan-qr-btn");
 const videoContainer = document.getElementById("video-container");
-const closeCameraBtn = document.getElementById("close-camera-btn");
-
-let isScanning = false;
+const closeCameraBtn = document.getElementById("close-camera");
 let codeReader;
+let isScanning = false;
 
-// Function to get query parameters from URL
+// Toggle Dark Mode
+toggleDarkModeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
+
+// Get Query Parameter from URL
 function getQueryParam(param) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 }
 
-// Check if certificate ID is in the URL and verify automatically
-const certificateIdFromUrl = getQueryParam("id");
-if (certificateIdFromUrl) {
-  certificateIdInput.value = certificateIdFromUrl; // Optional: Show ID in input
-  verifyCertificate(); // Trigger verification immediately
+// Refresh Application (Reset UI and URL)
+function refreshApplication() {
+  certificateIdInput.value = "";
+  verificationResult.innerHTML = "";
+  verifyAnotherBtn.style.display = "none";
+  // Redirect to base URL to clear query parameters
+  window.history.pushState({}, document.title, window.location.pathname);
 }
 
-// QR Code Scanning Event
-scanQrBtn.addEventListener("click", () => {
-  if (isScanning) return;
-  isScanning = true;
-  verificationResult.innerHTML = "";
-
-  // Initialize ZXing QR code reader
-  codeReader = new ZXing.BrowserQRCodeReader();
-  videoContainer.style.display = "block";
-
-  codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
-    if (result) {
-      const certificateId = result.text; // Extract ID from QR code
-      // Redirect to URL with certificate ID
-      window.location.href = `https://freshertalk.github.io/cert-verification-test/?id=${certificateId}`;
-    }
-    if (err && !(err instanceof ZXing.NotFoundException)) {
-      console.error("QR Scan Error:", err);
-      verificationResult.innerHTML =
-        '<p style="color: red;">Error scanning QR code. Please try again.</p>';
-      stopScanning();
-      isScanning = false;
-    }
-  });
-});
-
-// Verification Function
+// Verify Certificate
 function verifyCertificate() {
   const id = certificateIdInput.value.trim();
   if (!id) {
@@ -60,7 +42,7 @@ function verifyCertificate() {
     .then((response) => response.text())
     .then((data) => {
       const rows = data.split("\n").map((row) => row.split(","));
-      const records = rows.slice(1); // Skip header row
+      const records = rows.slice(1);
 
       const record = records.find((row) => row[0] === id);
       if (record) {
@@ -70,11 +52,11 @@ function verifyCertificate() {
                     <p><strong>Course:</strong> ${record[2]}</p>
                     <p><strong>Date Issued:</strong> ${record[3]}</p>
                 `;
-        verifyAnotherBtn.style.display = "block"; // Show reset button
+        verifyAnotherBtn.style.display = "block";
       } else {
         verificationResult.innerHTML =
           '<p style="color: red; font-weight: bold;">Certificate not found.</p>';
-        setTimeout(refreshApplication, 5000); // Refresh after 5 seconds
+        setTimeout(refreshApplication, 5000);
       }
     })
     .catch((error) => {
@@ -85,13 +67,46 @@ function verifyCertificate() {
     });
 }
 
-// Refresh Application to Initial State
-function refreshApplication() {
-  window.location.href =
-    "https://freshertalk.github.io/cert-verification-test/";
-}
+// QR Code Scanning
+scanQrBtn.addEventListener("click", () => {
+  if (isScanning) return;
+  isScanning = true;
+  verificationResult.innerHTML = "";
 
-// Stop QR Code Scanning
+  codeReader = new ZXing.BrowserQRCodeReader();
+  videoContainer.style.display = "block";
+
+  codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
+    if (result) {
+      let certificateId = result.text;
+      if (certificateId.startsWith("http")) {
+        const url = new URL(certificateId);
+        certificateId = url.searchParams.get("id");
+      }
+
+      if (!certificateId || !certificateId.match(/^FT-WS-\d+$/)) {
+        verificationResult.innerHTML =
+          '<p style="color: red;">Please scan a valid QR code.</p>';
+        stopScanning();
+        isScanning = false;
+        setTimeout(refreshApplication, 5000);
+        return;
+      }
+
+      // Redirect to URL with certificate ID
+      window.location.href = `https://freshertalk.github.io/cert-verification-test/?id=${certificateId}`;
+    }
+    if (err && !(err instanceof ZXing.NotFoundException)) {
+      console.error("QR Scan Error:", err);
+      verificationResult.innerHTML =
+        '<p style="color: red;">Error scanning QR code.</p>';
+      stopScanning();
+      isScanning = false;
+      setTimeout(refreshApplication, 5000);
+    }
+  });
+});
+
 function stopScanning() {
   if (codeReader) {
     codeReader.reset();
@@ -104,11 +119,36 @@ function stopScanning() {
   }
 }
 
-// Close Camera Button Event
 closeCameraBtn.addEventListener("click", () => {
   stopScanning();
   isScanning = false;
 });
 
-// Verify Another Record Button Event
 verifyAnotherBtn.addEventListener("click", refreshApplication);
+
+// Verify Certificate Button Event
+verifyBtn.addEventListener("click", verifyCertificate);
+
+// Automatic Verification on Page Load if URL Parameter Exists
+const certificateIdFromUrl = getQueryParam("id");
+if (certificateIdFromUrl) {
+  certificateIdInput.value = certificateIdFromUrl;
+  verifyCertificate();
+}
+
+// Floating Animations (if previously included)
+function createParticles() {
+  const particleContainer = document.querySelector(".background-animations");
+  const particleCount = 20;
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.classList.add("particle");
+    particle.style.width = `${Math.random() * 10 + 5}px`;
+    particle.style.height = particle.style.width;
+    particle.style.left = `${Math.random() * 100}vw`;
+    particle.style.top = `${Math.random() * 100}vh`;
+    particle.style.animationDelay = `${Math.random() * 10}s`;
+    particleContainer.appendChild(particle);
+  }
+}
+createParticles();
