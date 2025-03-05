@@ -59,8 +59,7 @@ button {
     cursor: pointer;
 }
 
-#verify-btn,
-#scan-qr-btn {
+#verify-btn, #scan-qr-btn {
     background: #008080;
     color: white;
 }
