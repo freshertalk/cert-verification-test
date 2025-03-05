@@ -1,10 +1,5 @@
-// Toggle Dark Mode
+// DOM Elements
 const toggleDarkModeBtn = document.getElementById("toggle-dark-mode");
-toggleDarkModeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-});
-
-// Verification Functionality
 const verifyBtn = document.getElementById("verify-btn");
 const certificateIdInput = document.getElementById("certificate-id");
 const verificationResult = document.getElementById("verification-result");
@@ -15,12 +10,19 @@ const closeCameraBtn = document.getElementById("close-camera");
 let codeReader;
 let isScanning = false;
 
+// Toggle Dark Mode
+toggleDarkModeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
+
+// Refresh Application
 function refreshApplication() {
   certificateIdInput.value = "";
   verificationResult.innerHTML = "";
   verifyAnotherBtn.style.display = "none";
 }
 
+// Verify Certificate
 function verifyCertificate() {
   const id = certificateIdInput.value.trim();
   if (!id) {
@@ -46,19 +48,20 @@ function verifyCertificate() {
       } else {
         verificationResult.innerHTML =
           '<p style="color: red; font-weight: bold;">Certificate not found.</p>';
+        setTimeout(refreshApplication, 5000);
       }
-      setTimeout(refreshApplication, 2000);
     })
     .catch((error) => {
       console.error("Error reading CSV:", error);
       verificationResult.innerHTML =
         '<p style="color: red;">Error verifying certificate.</p>';
-      setTimeout(refreshApplication, 2000);
+      setTimeout(refreshApplication, 5000);
     });
 }
 
 verifyBtn.addEventListener("click", verifyCertificate);
 
+// QR Code Scanning
 scanQrBtn.addEventListener("click", () => {
   if (isScanning) return;
   isScanning = true;
@@ -80,7 +83,7 @@ scanQrBtn.addEventListener("click", () => {
           '<p style="color: red;">Please scan a valid QR code.</p>';
         stopScanning();
         isScanning = false;
-        setTimeout(refreshApplication, 2000);
+        setTimeout(refreshApplication, 5000);
         return;
       }
 
@@ -95,7 +98,7 @@ scanQrBtn.addEventListener("click", () => {
         '<p style="color: red;">Error scanning QR code.</p>';
       stopScanning();
       isScanning = false;
-      setTimeout(refreshApplication, 2000);
+      setTimeout(refreshApplication, 5000);
     }
   });
 });
