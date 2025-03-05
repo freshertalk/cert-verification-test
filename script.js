@@ -1,87 +1,83 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("verify-form");
-  const certificateInput = document.getElementById("certificate_id");
-  const errorMessage = document.getElementById("error-message");
-  const resultDiv = document.getElementById("result");
-  const toggleThemeButton = document.getElementById("toggle-theme");
+// Toggle Dark Mode functionality (assuming it exists)
+const toggleDarkModeBtn = document.getElementById("toggle-dark-mode");
+toggleDarkModeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
 
-  // Load saved theme from local storage
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
+// Verification functionality
+const verifyBtn = document.getElementById("verify-btn");
+const certificateIdInput = document.getElementById("certificate-id");
+const verificationResult = document.getElementById("verification-result");
+const verifyAnotherBtn = document.getElementById("verify-another-btn");
+const scanQrBtn = document.getElementById("scan-qr-btn");
+const videoContainer = document.getElementById("video-container");
+let codeReader;
+
+function verifyCertificate() {
+  const id = certificateIdInput.value.trim();
+  if (!id) {
+    alert("Please enter or scan a certificate ID.");
+    return;
   }
 
-  // Handle dark mode toggle
-  toggleThemeButton.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    localStorage.setItem(
-      "theme",
-      document.body.classList.contains("dark-mode") ? "dark" : "light"
-    );
-  });
+  // Fetch and parse the CSV file
+  fetch("certificates.csv")
+    .then((response) => response.text())
+    .then((data) => {
+      const rows = data.split("\n").map((row) => row.split(","));
+      const headers = rows[0];
+      const records = rows.slice(1);
 
-  // Handle form submission
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const certificateId = certificateInput.value.trim();
-
-    // Clear previous messages
-    errorMessage.classList.add("hidden");
-    resultDiv.classList.add("hidden");
-    resultDiv.innerHTML = "";
-
-    // Basic input validation
-    if (!certificateId) {
-      errorMessage.textContent = "Please enter a Certificate ID";
-      errorMessage.classList.remove("hidden");
-      return;
-    }
-
-    try {
-      // Fetch and parse the CSV file
-      const response = await fetch("certificates.csv");
-      if (!response.ok) throw new Error("Failed to fetch certificates");
-      const text = await response.text();
-      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-      if (parsed.errors.length > 0) throw new Error("Error parsing CSV");
-
-      // Find the certificate
-      const certificates = parsed.data;
-      const certificate = certificates.find(
-        (cert) => cert.certificate_id === certificateId
-      );
-
-      if (certificate) {
-        // Display certificate details with Copy ID button
-        resultDiv.innerHTML = `
-                    <i class="fas fa-check-circle icon"></i>
-                    <h3>Certificate Found</h3>
-                    <p><strong>Certificate ID:</strong> ${certificate.certificate_id}</p>
-                    <p><strong>Name:</strong> ${certificate.name}</p>
-                    <p><strong>Course:</strong> ${certificate.course}</p>
-                    <p><strong>Date Issued:</strong> ${certificate.date_issued}</p>
-                    <button class="copy-button" onclick="copyToClipboard('${certificate.certificate_id}')">Copy ID</button>
+      const record = records.find((row) => row[0] === id);
+      if (record) {
+        verificationResult.innerHTML = `
+                    <p><strong>Certificate ID:</strong> ${record[0]}</p>
+                    <p><strong>Name:</strong> ${record[1]}</p>
+                    <p><strong>Course:</strong> ${record[2]}</p>
+                    <p><strong>Date Issued:</strong> ${record[3]}</p>
                 `;
-        resultDiv.classList.remove("hidden");
+        verifyAnotherBtn.style.display = "block";
       } else {
-        errorMessage.textContent =
-          "The certificate ID you entered was not found in our records.";
-        errorMessage.classList.remove("hidden");
+        verificationResult.innerHTML = "<p>Certificate not found.</p>";
       }
-    } catch (error) {
-      errorMessage.textContent = `Error: ${error.message}`;
-      errorMessage.classList.remove("hidden");
+    })
+    .catch((error) => {
+      console.error("Error reading CSV:", error);
+      verificationResult.innerHTML = "<p>Error verifying certificate.</p>";
+    });
+}
+
+// Event listener for Verify button
+verifyBtn.addEventListener("click", verifyCertificate);
+
+// QR Scanning functionality
+scanQrBtn.addEventListener("click", () => {
+  codeReader = new ZXing.BrowserQRCodeReader();
+  videoContainer.style.display = "block";
+
+  codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
+    if (result) {
+      let certificateId = result.text;
+      // Handle case where QR code contains a URL
+      if (certificateId.startsWith("http")) {
+        const url = new URL(certificateId);
+        certificateId = url.searchParams.get("id");
+      }
+      certificateIdInput.value = certificateId;
+      videoContainer.style.display = "none";
+      codeReader.reset();
+      verifyCertificate();
+    }
+    if (err && !(err instanceof ZXing.NotFoundException)) {
+      console.error("QR Scan Error:", err);
+      verificationResult.innerHTML = "<p>Error scanning QR code.</p>";
     }
   });
+});
 
-  // Function to copy certificate ID to clipboard
-  window.copyToClipboard = function (text) {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Certificate ID copied to clipboard");
-      })
-      .catch(() => {
-        alert("Failed to copy");
-      });
-  };
+// Verify Another Record functionality
+verifyAnotherBtn.addEventListener("click", () => {
+  verificationResult.innerHTML = "";
+  certificateIdInput.value = "";
+  verifyAnotherBtn.style.display = "none";
 });

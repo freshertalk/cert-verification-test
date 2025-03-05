@@ -4,62 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FresherTalk Certificate Verification</title>
+    <title>Certificate Verification System</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- Include ZXing library for QR code scanning -->
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
 </head>
 
 <body>
-    <!-- Header with logo and company name -->
     <header>
-        <img src="freshtalk-logo.png" alt="FresherTalk Logo" class="logo animate__animated animate__fadeIn">
-        <h1 class="company-name animate__animated animate__slideInDown">FresherTalk Digital Solutions</h1>
+        <div class="logo">
+            <img src="logo.png" alt="FresherTalk Logo"> <!-- Replace with actual logo path -->
+            <h1>FresherTalk Digital Solutions</h1>
+        </div>
     </header>
-
-    <!-- Main content with verification form -->
-    <main class="container">
-        <section class="card animate__animated animate__fadeInUp">
-            <h2 class="animate__animated animate__slideInUp">Certificate Verification System</h2>
-            <form id="verify-form" class="input-group">
-                <div class="input-wrapper">
-                    <input type="text" id="certificate_id" name="certificate_id" placeholder=" " required>
-                    <label for="certificate_id">Please Enter Certificate ID</label>
-                </div>
-                <button type="submit" class="verify-button">Verify Certificate <i class="fas fa-search"></i></button>
-                <p id="error-message" class="error-message hidden"></p>
-            </form>
-            <div id="result" class="result hidden animate__animated animate__fadeIn"></div>
-            <button id="toggle-theme" class="theme-toggle">Toggle Dark Mode</button>
-        </section>
-    </main>
-
-    <!-- Footer with company details -->
-    <footer class="footer">
-        <div class="footer-content">
-            <h3>FresherTalk Digital Solutions</h3>
-            <p><i class="fas fa-map-marker-alt"></i> Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
-            <p><i class="fas fa-id-card"></i> Registration No.: UPSA66715491 | MSME URN: UDYAM-UP-30-0037331</p>
-            <p><i class="fas fa-file-invoice"></i> GSTIN: 09BMEPT8758F1ZD</p>
-            <p><i class="fas fa-check-circle"></i> Recognized by AICTE, New Delhi for offering internships</p>
-            <p><i class="fas fa-envelope"></i> <a href="mailto:campus@freshtalk.in">campus@freshtalk.in</a></p>
-            <p><i class="fas fa-phone"></i> <a href="tel:+919535039501">+91-95350 39501</a></p>
-            <p><i class="fas fa-globe"></i> <a href="https://freshtalk.in" target="_blank">https://freshtalk.in</a></p>
-            <div class="social-links">
-                <a href="https://www.facebook.com/freshertalkDS" class="social-icon"><i
-                        class="fab fa-facebook-f"></i></a>
-                <a href="https://wa.me/9535039501" class="social-icon" target="_blank"><i
-                        class="fab fa-whatsapp"></i></a>
-                <a href="https://www.linkedin.com/company/freshertalk-in" class="social-icon" target="_blank"><i
-                        class="fab fa-linkedin-in"></i></a>
+    <main>
+        <div class="verification-box">
+            <h2>Certificate Verification System</h2>
+            <div class="input-group">
+                <input type="text" id="certificate-id" placeholder="PLEASE ENTER CERTIFICATE ID">
+                <button id="verify-btn">VERIFY CERTIFICATE <span class="magnifier">🔍</span></button>
+                <button id="scan-qr-btn">SCAN QR CODE</button>
             </div>
-            <p class="copyright">© 2025 FresherTalk Digital Solutions. All Rights Reserved.</p>
+            <div id="verification-result"></div>
+            <button id="verify-another-btn" style="display: none;">VERIFY ANOTHER RECORD</button>
+        </div>
+        <button id="toggle-dark-mode">Toggle Dark Mode</button>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <h3>FRESHER TALK DIGITAL SOLUTIONS</h3>
+            <p>Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
+            <p>REGISTRATION NO.: UPSA66715491 | MSME URN: UDYAM-UP-30-0037331</p>
+            <p>GSTIN: 09BMEPT8758F1ZD</p>
+            <p><span class="checkmark">✔</span> RECOGNIZED BY AICTE, NEW DELHI FOR OFFERING INTERNSHIPS</p>
+            <p><span class="icon">📧</span> campus@freshtalk.in</p>
+            <p><span class="icon">📞</span> +91-95350 39501</p>
+            <p><span class="icon">🌐</span> <a href="https://freshtalk.in">https://freshtalk.in</a></p>
+            <div class="social-icons">
+                <a href="#"><span class="icon">f</span></a>
+                <a href="#"><span class="icon">📱</span></a>
+                <a href="#"><span class="icon">in</span></a>
+            </div>
         </div>
     </footer>
-
-    <!-- External scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Video container for QR scanning -->
+    <div id="video-container" style="display: none;">
+        <video id="video" width="300" height="300"></video>
+    </div>
     <script src="script.js"></script>
 </body>
 
