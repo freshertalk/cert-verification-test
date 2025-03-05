@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate Verification System</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
+
 <body>
-    <div class="background-animations">
-        <!-- Floating particles added via JS -->
-    </div>
     <header>
         <div class="logo">
             <img src="logo.png" alt="FresherTalk Logo">
@@ -20,25 +20,27 @@
     <main>
         <div class="verification-box">
             <h2>Certificate Verification System</h2>
-            <p class="instruction">Please enter certificate ID:</p>
             <div class="input-group">
-                <input type="text" id="certificate-id" placeholder="PLEASE ENTER CERTIFICATE ID">
-                <button id="verify-btn">VERIFY CERTIFICATE <span class="magnifier">🔍</span></button>
-                <button id="scan-qr-btn">SCAN QR CODE</button>
+                <label for="certificate-id">Enter Certificate ID:</label>
+                <input type="text" id="certificate-id" placeholder="Enter Certificate ID">
+                <div class="button-group">
+                    <button id="verify-btn">Verify Certificate <span class="magnifier">🔍</span></button>
+                    <button id="scan-qr-btn">Scan QR Code</button>
+                </div>
             </div>
             <div id="verification-result"></div>
-            <button id="verify-another-btn" style="display: none;">VERIFY ANOTHER RECORD</button>
+            <button id="verify-another-btn" style="display: none;">Verify Another Record</button>
+            <button id="toggle-dark-mode">Toggle Dark Mode</button>
         </div>
-        <button id="toggle-dark-mode">Toggle Dark Mode</button>
     </main>
     <footer>
         <div class="footer-content">
             <h3>FresherTalk Digital Solutions</h3>
-            <p><span class="icon">📍</span> Registered Address: Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
+            <p><span class="icon">📍</span> Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
             <p><span class="icon">📜</span> MSME URN: UDYAM-UP-30-0037331</p>
             <p><span class="icon">📜</span> Reg No.: UPSA66715491</p>
             <p><span class="icon">📜</span> GSTIN: 09BMEPT8758F1ZD</p>
-            <p><span class="icon">🏢</span> AICTE-Internship Organisation ID: CORPORATE6754a07dc144c1733599357</p>
+            <p><span class="icon">🏢</span> AICTE-Internship ID: CORPORATE6754a07dc144c1733599357</p>
             <p><span class="icon">📧</span> campus@freshtalk.in</p>
             <p><span class="icon">📞</span> +91-95350 39501</p>
             <p><span class="icon">🌐</span> <a href="https://freshtalk.in">https://freshtalk.in</a></p>
@@ -55,4 +57,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
