@@ -13,7 +13,14 @@ const scanQrBtn = document.getElementById("scan-qr-btn");
 const videoContainer = document.getElementById("video-container");
 const closeCameraBtn = document.getElementById("close-camera");
 let codeReader;
-let isScanning = false; // Track scanning state to prevent multiple alerts
+let isScanning = false;
+
+// Function to refresh the application state
+function refreshApplication() {
+  certificateIdInput.value = "";
+  verificationResult.innerHTML = "";
+  verifyAnotherBtn.style.display = "none";
+}
 
 function verifyCertificate() {
   const id = certificateIdInput.value.trim();
@@ -41,17 +48,21 @@ function verifyCertificate() {
       } else {
         verificationResult.innerHTML = "<p>Certificate not found.</p>";
       }
+      // Automatically refresh after 2 seconds
+      setTimeout(refreshApplication, 2000);
     })
     .catch((error) => {
       console.error("Error reading CSV:", error);
       verificationResult.innerHTML = "<p>Error verifying certificate.</p>";
+      // Refresh even on error
+      setTimeout(refreshApplication, 2000);
     });
 }
 
 verifyBtn.addEventListener("click", verifyCertificate);
 
 scanQrBtn.addEventListener("click", () => {
-  if (isScanning) return; // Prevent multiple scanning attempts
+  if (isScanning) return;
   isScanning = true;
 
   codeReader = new ZXing.BrowserQRCodeReader();
@@ -60,30 +71,32 @@ scanQrBtn.addEventListener("click", () => {
   codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
     if (result) {
       let certificateId = result.text;
-      // Handle case where QR code contains a URL
       if (certificateId.startsWith("http")) {
         const url = new URL(certificateId);
         certificateId = url.searchParams.get("id");
       }
 
-      // Validate certificate ID (basic format check)
       if (!certificateId || !certificateId.match(/^FT-WS-\d+$/)) {
         verificationResult.innerHTML = "<p>Please scan a valid QR.</p>";
         stopScanning();
         isScanning = false;
+        // Refresh after invalid QR
+        setTimeout(refreshApplication, 2000);
         return;
       }
 
       certificateIdInput.value = certificateId;
       stopScanning();
       isScanning = false;
-      verifyCertificate();
+      verifyCertificate(); // This will handle the refresh
     }
     if (err && !(err instanceof ZXing.NotFoundException)) {
       console.error("QR Scan Error:", err);
       verificationResult.innerHTML = "<p>Error scanning QR code.</p>";
       stopScanning();
       isScanning = false;
+      // Refresh after scanning error
+      setTimeout(refreshApplication, 2000);
     }
   });
 });
@@ -105,11 +118,7 @@ closeCameraBtn.addEventListener("click", () => {
   isScanning = false;
 });
 
-verifyAnotherBtn.addEventListener("click", () => {
-  verificationResult.innerHTML = "";
-  certificateIdInput.value = "";
-  verifyAnotherBtn.style.display = "none";
-});
+verifyAnotherBtn.addEventListener("click", refreshApplication);
 
 // Floating Animations
 function createParticles() {

@@ -99,7 +99,9 @@ main {
     color: var(--input-text);
 }
 
-#verify-btn, #scan-qr-btn, #verify-another-btn {
+#verify-btn,
+#scan-qr-btn,
+#verify-another-btn {
     background: var(--button-bg);
     color: var(--button-text);
     border: none;
@@ -110,7 +112,9 @@ main {
     transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#verify-btn:hover, #scan-qr-btn:hover, #verify-another-btn:hover {
+#verify-btn:hover,
+#scan-qr-btn:hover,
+#verify-another-btn:hover {
     transform: scale(1.05);
     background: var(--button-hover);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -193,9 +197,20 @@ footer {
 }
 
 @keyframes float {
-    0% { transform: translateY(0) scale(1); opacity: 0.5; }
-    50% { transform: translateY(-100vh) scale(1.5); opacity: 0.8; }
-    100% { transform: translateY(-200vh) scale(1); opacity: 0.5; }
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-200vh) scale(1);
+        opacity: 0.5;
+    }
 }
 
 /* Video Container for QR Scanning */
@@ -238,9 +253,13 @@ footer {
 
 /* Accessibility: Reduce Motion */
 @media (prefers-reduced-motion: reduce) {
-    #verify-btn, #scan-qr-btn, #verify-another-btn {
+
+    #verify-btn,
+    #scan-qr-btn,
+    #verify-another-btn {
         transition: none;
     }
+
     .particle {
         animation: none;
     }
