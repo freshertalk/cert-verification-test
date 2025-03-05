@@ -13,6 +13,7 @@ const scanQrBtn = document.getElementById("scan-qr-btn");
 const videoContainer = document.getElementById("video-container");
 const closeCameraBtn = document.getElementById("close-camera");
 let codeReader;
+let isScanning = false; // Track scanning state to prevent multiple alerts
 
 function verifyCertificate() {
   const id = certificateIdInput.value.trim();
@@ -50,35 +51,58 @@ function verifyCertificate() {
 verifyBtn.addEventListener("click", verifyCertificate);
 
 scanQrBtn.addEventListener("click", () => {
+  if (isScanning) return; // Prevent multiple scanning attempts
+  isScanning = true;
+
   codeReader = new ZXing.BrowserQRCodeReader();
   videoContainer.style.display = "block";
 
   codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
     if (result) {
       let certificateId = result.text;
+      // Handle case where QR code contains a URL
       if (certificateId.startsWith("http")) {
         const url = new URL(certificateId);
         certificateId = url.searchParams.get("id");
       }
+
+      // Validate certificate ID (basic format check)
+      if (!certificateId || !certificateId.match(/^FT-WS-\d+$/)) {
+        verificationResult.innerHTML = "<p>Please scan a valid QR.</p>";
+        stopScanning();
+        isScanning = false;
+        return;
+      }
+
       certificateIdInput.value = certificateId;
-      videoContainer.style.display = "none";
-      codeReader.reset();
+      stopScanning();
+      isScanning = false;
       verifyCertificate();
     }
     if (err && !(err instanceof ZXing.NotFoundException)) {
       console.error("QR Scan Error:", err);
       verificationResult.innerHTML = "<p>Error scanning QR code.</p>";
+      stopScanning();
+      isScanning = false;
     }
   });
 });
 
-closeCameraBtn.addEventListener("click", () => {
-  const video = document.getElementById("video");
-  const stream = video.srcObject;
-  if (stream) {
-    stream.getTracks().forEach((track) => track.stop());
+function stopScanning() {
+  if (codeReader) {
+    codeReader.reset();
+    const video = document.getElementById("video");
+    const stream = video.srcObject;
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    videoContainer.style.display = "none";
   }
-  videoContainer.style.display = "none";
+}
+
+closeCameraBtn.addEventListener("click", () => {
+  stopScanning();
+  isScanning = false;
 });
 
 verifyAnotherBtn.addEventListener("click", () => {
