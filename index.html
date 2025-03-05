@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,21 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/@zxing/library@latest"></script>
 </head>
+
 <body>
+    <div class="background-animations">
+        <!-- Floating particles added via JS -->
+    </div>
     <header>
         <div class="logo">
             <img src="logo.png" alt="FresherTalk Logo">
+            <h1>FresherTalk Digital Solutions</h1>
         </div>
-        <h1>FresherTalk Digital Solutions</h1>
     </header>
     <main>
         <div class="verification-box">
             <h2>Certificate Verification System</h2>
-            <p>Please enter certificate ID:</p>
+            <p class="instruction">Please enter certificate ID:</p>
             <div class="input-group">
                 <input type="text" id="certificate-id" placeholder="PLEASE ENTER CERTIFICATE ID">
                 <button id="verify-btn">VERIFY CERTIFICATE <span class="magnifier">🔍</span></button>
@@ -30,8 +35,8 @@
     </main>
     <footer>
         <div class="footer-content">
-            <h3>FRESHER TALK DIGITAL SOLUTIONS</h3>
-            <p><span class="icon">📍</span> Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
+            <h3>FresherTalk Digital Solutions</h3>
+            <p><span class="icon">📍</span> Registered Address: Aurangabad, Ghazipur, 233001, Uttar Pradesh, India</p>
             <p><span class="icon">📜</span> MSME URN: UDYAM-UP-30-0037331</p>
             <p><span class="icon">📜</span> Reg No.: UPSA66715491</p>
             <p><span class="icon">📜</span> GSTIN: 09BMEPT8758F1ZD</p>
@@ -52,4 +57,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
