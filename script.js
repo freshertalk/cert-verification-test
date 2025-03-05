@@ -15,12 +15,26 @@ toggleDarkModeBtn.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 });
 
+// Get Query Parameter from URL
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+// Refresh Application (Reset UI and URL)
+function refreshApplication() {
+  certificateIdInput.value = "";
+  verificationResult.innerHTML = "";
+  verifyAnotherBtn.style.display = "none";
+  // Clear URL query parameters
+  window.history.pushState({}, document.title, window.location.pathname);
+}
+
 // Verify Certificate
-verifyBtn.addEventListener("click", () => {
+function verifyCertificate() {
   const id = certificateIdInput.value.trim();
   if (!id) {
-    verificationResult.innerHTML =
-      '<p style="color: #e67e22;">Please enter a certificate ID.</p>';
+    alert("Please enter or scan a certificate ID.");
     return;
   }
 
@@ -28,66 +42,77 @@ verifyBtn.addEventListener("click", () => {
     .then((response) => response.text())
     .then((data) => {
       const rows = data.split("\n").map((row) => row.split(","));
-      const headers = rows[0];
       const records = rows.slice(1);
 
       const record = records.find((row) => row[0] === id);
       if (record) {
         verificationResult.innerHTML = `
-                    <p><strong>${headers[0]}:</strong> ${record[0]}</p>
-                    <p><strong>${headers[1]}:</strong> ${record[1]}</p>
-                    <p><strong>${headers[2]}:</strong> ${record[2]}</p>
-                    <p><strong>${headers[3]}:</strong> ${record[3]}</p>
+                    <p><strong>Certificate ID:</strong> ${record[0]}</p>
+                    <p><strong>Name:</strong> ${record[1]}</p>
+                    <p><strong>Course:</strong> ${record[2]}</p>
+                    <p><strong>Date Issued:</strong> ${record[3]}</p>
                 `;
         verifyAnotherBtn.style.display = "block";
       } else {
         verificationResult.innerHTML =
-          '<p style="color: #e67e22;">Certificate not found.</p>';
+          '<p style="color: red; font-weight: bold;">Certificate not found.</p>';
+        setTimeout(refreshApplication, 5000);
       }
     })
     .catch((error) => {
       console.error("Error reading CSV:", error);
       verificationResult.innerHTML =
-        '<p style="color: #e67e22;">Error verifying certificate.</p>';
+        '<p style="color: red;">Error verifying certificate.</p>';
+      setTimeout(refreshApplication, 5000);
     });
-});
+}
 
 // QR Code Scanning
 scanQrBtn.addEventListener("click", () => {
   if (isScanning) return;
   isScanning = true;
-  videoContainer.style.display = "block";
-
-  if (codeReader) {
-    codeReader.reset();
-    codeReader = null;
-  }
+  verificationResult.innerHTML = "";
 
   codeReader = new ZXing.BrowserQRCodeReader();
+  videoContainer.style.display = "block";
+
   codeReader.decodeFromVideoDevice(null, "video", (result, err) => {
     if (result) {
-      let certificateId = result.text;
-      if (certificateId.startsWith("http")) {
-        const url = new URL(certificateId);
-        certificateId = url.searchParams.get("id");
+      let qrContent = result.text;
+
+      // Extract certificate ID from QR content
+      let certificateId = qrContent;
+
+      // Check if the QR content is a URL and extract the ID if present
+      if (qrContent.startsWith("http")) {
+        try {
+          const url = new URL(qrContent);
+          certificateId = url.searchParams.get("id") || qrContent;
+        } catch (e) {
+          certificateId = qrContent;
+        }
       }
+
+      // Validate the extracted ID (only check for FT- prefix)
       if (!certificateId || !certificateId.match(/^FT-/)) {
         verificationResult.innerHTML =
-          '<p style="color: #e67e22;">Invalid QR code. Please scan a valid certificate ID (starting with FT-).</p>';
+          '<p style="color: red;">Please scan a valid QR code containing a certificate ID starting with FT-.</p>';
         stopScanning();
         isScanning = false;
         setTimeout(refreshApplication, 5000);
         return;
       }
+
+      // Populate input field and verify automatically
       certificateIdInput.value = certificateId;
       stopScanning();
       isScanning = false;
-      verifyBtn.click();
+      verifyCertificate();
     }
     if (err && !(err instanceof ZXing.NotFoundException)) {
       console.error("QR Scan Error:", err);
       verificationResult.innerHTML =
-        '<p style="color: #e67e22;">Error scanning QR code. Please try again.</p>';
+        '<p style="color: red;">Error scanning QR code.</p>';
       stopScanning();
       isScanning = false;
       setTimeout(refreshApplication, 5000);
@@ -101,11 +126,20 @@ function stopScanning() {
     const video = document.getElementById("video");
     const stream = video.srcObject;
     if (stream) {
+      // Stop all media tracks (camera)
       stream.getTracks().forEach((track) => track.stop());
     }
-    video.srcObject = null;
+    // Fallback: Directly stop camera using navigator if still active
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((mediaStream) => {
+          mediaStream.getTracks().forEach((track) => track.stop());
+        })
+        .catch((err) => console.log("No active camera to stop:", err));
+    }
+    video.srcObject = null; // Clear the video source
     videoContainer.style.display = "none";
-    codeReader = null;
   }
 }
 
@@ -114,14 +148,31 @@ closeCameraBtn.addEventListener("click", () => {
   isScanning = false;
 });
 
-verifyAnotherBtn.addEventListener("click", () => {
-  certificateIdInput.value = "";
-  verificationResult.innerHTML = "";
-  verifyAnotherBtn.style.display = "none";
-});
+verifyAnotherBtn.addEventListener("click", refreshApplication);
 
-function refreshApplication() {
-  certificateIdInput.value = "";
-  verificationResult.innerHTML = "";
-  verifyAnotherBtn.style.display = "none";
+// Verify Certificate Button Event
+verifyBtn.addEventListener("click", verifyCertificate);
+
+// Automatic Verification on Page Load if URL Parameter Exists
+const certificateIdFromUrl = getQueryParam("id");
+if (certificateIdFromUrl) {
+  certificateIdInput.value = certificateIdFromUrl;
+  verifyCertificate();
 }
+
+// Floating Animations
+function createParticles() {
+  const particleContainer = document.querySelector(".background-animations");
+  const particleCount = 20;
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.classList.add("particle");
+    particle.style.width = `${Math.random() * 10 + 5}px`;
+    particle.style.height = particle.style.width;
+    particle.style.left = `${Math.random() * 100}vw`;
+    particle.style.top = `${Math.random() * 100}vh`;
+    particle.style.animationDelay = `${Math.random() * 10}s`;
+    particleContainer.appendChild(particle);
+  }
+}
+createParticles();
